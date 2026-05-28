@@ -1,19 +1,19 @@
 ---
-- name: Installation de Docker sur le Lab Azure
+- name: Installation of Docker on Lab Azure
   hosts: all
   become: yes
   tasks:
-    - name: Installer dnf-plugins-core
+    - name: Install dnf-plugins-core
       dnf:
         name: dnf-plugins-core
         state: present
 
-    - name: Ajouter le dépôt Docker CE
+    - name: Add depot Docker CE
       get_url:
         url: https://download.docker.com/linux/centos/docker-ce.repo
         dest: /etc/yum.repos.d/docker-ce.repo
 
-    - name: Installer Docker CE et Docker Compose
+    - name: Install Docker CE and Docker Compose
       dnf:
         name:
           - docker-ce
@@ -23,13 +23,13 @@
         state: present
         allowerasing: yes
 
-    - name: Démarrer et activer le service Docker
+    - name: Run docker service
       systemd:
         name: docker
         state: started
         enabled: yes
 
-    - name: Ajouter l'utilisateur au groupe docker
+    - name: add user to docker group
       user:
         name: sysadmin
         groups: docker
