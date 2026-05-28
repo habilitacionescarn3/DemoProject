@@ -1,0 +1,41 @@
+name: 'Terraform CI'
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  terraform-preview:
+    name: 'Terraform Plan'
+    runs-on: rockylinux-latest
+
+    steps:
+    # 1. code of github depot
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Azure connection
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # 3. terraform install on github agent
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    # 4. init and check the code
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./terraform
+
+    - name: Terraform Validate
+      run: terraform validate
+      working-directory: ./terraform
+
+    # 5. Run the Plan (Simulation)
+    - name: Terraform Plan
+      run: terraform plan
+      working-directory: ./terraform
